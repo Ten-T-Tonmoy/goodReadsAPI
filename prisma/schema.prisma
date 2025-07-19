@@ -22,3 +22,88 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Book {
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+  genre           String
+  keywords        String[]
+  coverPhoto      String?
+  publisher       String?
+  publishDate     DateTime?
+  availableStores String[]
+  //Review[]  reviews         String[] 
+  ratingSum       Int       @default(0)
+  ratingNumber    Int       @default(0)
+  likedBy         User[]    @relation("likedBooks")
+  createdAt       DateTime  @default(now())
+  review          Review[]
+  BookList        BookList? @relation(fields: [bookListId], references: [id])
+  bookListId      String?
+}
+
+model User {
+  id              String     @id @default(cuid())
+  name            String
+  email           String?
+  region          String?
+  gender          Boolean //definately binary
+  profilePhoto    String?
+  coverPhoto      String?
+  about           String?
+  likedBooks      Book[]     @relation("likedBooks")
+  writtenReviews  Review[]
+  writtenArticles Article[]
+  createdBookList BookList[]
+  Commnet         Commnet[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  book      Book     @relation(fields: [bookId], references: [id])
+  bookId    String //this one auto generates to make relation
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  reviewer  User?    @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model Article {
+  id        String    @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime
+  updatedAt DateTime
+  author    User      @relation(fields: [userId], references: [id])
+  userId    String
+  upVotes   Int
+  downVotes Int
+  comments  Commnet[]
+}
+
+model Commnet {
+  id               String   @id @default(cuid())
+  content          String
+  targetedArticle  Article  @relation(fields: [articleId], references: [id])
+  articleId        String
+  targetedBooklist BookList @relation(fields: [bookListId], references: [id])
+  bookListId       String
+  commentedBy      User     @relation(fields: [userId], references: [id])
+  userId           String
+  createdAt        DateTime @default(now())
+}
+
+model BookList {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  coverPhoto  String?
+  createdBy   User      @relation(fields: [userId], references: [id]) // local foreign key=> primary key of that table
+  userId      String
+  booksListed Book[]
+  upVotes     Int
+  downVotes   Int
+  comments    Commnet[]
+}
