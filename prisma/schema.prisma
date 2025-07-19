@@ -67,7 +67,8 @@ model Book {
   BookList        BookList? @relation(fields: [bookListId], references: [id])
   bookListId      String?
   personalRemark  String? // only for bookList making
-  writer          Author[]  @relation("authorBooks")
+  writer          Author[]  @relation("authorBooks") //non scalar so ? wont need its optional
+  writerIds       String[]
 
   @@index([genre])
   @@index([keywords])

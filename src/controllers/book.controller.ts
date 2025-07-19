@@ -3,6 +3,9 @@ import { Request, Response } from "express";
 
 import { bookType } from "../types";
 import { BookType } from "@prisma/client";
+import { addBookSchema } from "../zodSchemas/bookSchema.js";
+
+//zod shits
 
 export const getBooksHomePage = async (req: Request, res: Response) => {
   try {
@@ -179,7 +182,60 @@ export const getBookById = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: "getBooks controller error",
+      error: "Book By Id  controller error",
+    });
+  }
+};
+
+//----------------------------book Adding-----------------------------------
+
+export const addBook = async (req: Request, res: Response) => {
+  try {
+    const parsed = addBookSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).json({
+        error: "Zod validation Failed",
+        issues: parsed.error?.format,
+      });
+    }
+    const {
+      title,
+      description,
+      bookType, //will be a bullet option or option in frontend
+      genre,
+      keywords,
+      coverPhoto,
+      publisher,
+      publishDate,
+      availableStores,
+      writerIds, //string[] so careful well i messed gotta fix
+    } = parsed.data;
+
+    const newBook = await prisma.book.create({
+      data: {
+        title,
+        description,
+        bookType, //will be a bullet option or option in frontend
+        genre,
+        keywords,
+        coverPhoto,
+        publisher,
+        publishDate: publishDate ? new Date(publishDate) : undefined,
+
+        availableStores,
+        writerIds, //actually name string[]
+      },
+      include: {
+        writer: true,
+      },
+    });
+
+    res.status(201).json(newBook);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Addbooks controller error",
     });
   }
 };
