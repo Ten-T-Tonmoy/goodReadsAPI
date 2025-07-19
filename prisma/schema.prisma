@@ -23,12 +23,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//@@unique([filed1,filed2]) composite unique
+//@@index composite index  add things u wanna search by
+
+enum BookType {
+  poetry
+  drama
+  fiction
+  horror
+  nonFiction
+  academic
+  biography
+  children
+  youngAdult
+}
+
+enum AuthorType {
+  poet
+  novelist
+  dramatist
+  philosopher
+  scientist
+  fictionWriter
+}
+
 model Book {
   id              String    @id @default(cuid())
   title           String
   description     String
-  bookType        String //poetry drama academic bla bla shit
-  genre           String
+  bookType        BookType //poetry drama academic bla bla shit
+  genre           String[]
   keywords        String[]
   coverPhoto      String?
   publisher       String?
@@ -43,8 +67,10 @@ model Book {
   BookList        BookList? @relation(fields: [bookListId], references: [id])
   bookListId      String?
   personalRemark  String? // only for bookList making
-  Author          Author?   @relation(fields: [authorId], references: [id])
-  authorId        String?   @unique //one2one relation
+  writer          Author[]  @relation("authorBooks")
+
+  @@index([genre])
+  @@index([keywords])
 }
 
 model User {
@@ -60,21 +86,21 @@ model User {
   writtenReviews  Review[]
   writtenArticles Article[]
   createdBookList BookList[]
-  madeComments    Commnet[]
-  Author          Author[]
+  madeComments    Comment[]
+  Author          Author?
 }
 
 model Author {
   id              String     @id @default(cuid())
   info            String //gonna be markDownWiki
   userProfile     User       @relation(fields: [userId], references: [id])
-  writtenBooks    Book[]
+  writtenBooks    Book[]     @relation("authorBooks")
   createdPost     Article[]
   createdList     BookList[]
   region          String
   languageOfBooks String //considering main lanuguage now ex :persian poet
-  role            String //poet writer or dramaist bla bla
-  userId          String
+  role            AuthorType //poet writer or dramaist bla bla
+  userId          String     @unique // to one-one make unique and that optional for role based
 }
 
 model Review {
@@ -98,12 +124,12 @@ model Article {
   userId    String
   upVotes   Int
   downVotes Int
-  comments  Commnet[]
+  comments  Comment[]
   Author    Author?   @relation(fields: [authorId], references: [id])
   authorId  String?
 }
 
-model Commnet {
+model Comment {
   id               String   @id @default(cuid())
   content          String
   targetedArticle  Article  @relation(fields: [articleId], references: [id])
@@ -126,7 +152,7 @@ model BookList {
   booksListed  Book[]
   upVotes      Int
   downVotes    Int
-  comments     Commnet[]
+  comments     Comment[]
   Author       Author?   @relation(fields: [authorId], references: [id])
   authorId     String?
 }
