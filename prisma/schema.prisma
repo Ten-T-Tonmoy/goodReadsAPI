@@ -1,0 +1,24 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+//3 steps ... change schema >>>  then
+//npx prisma migrate dev --name init
+//use PrismaClient as prsima
+//prisma.user.findMany() /seller.findOne()
+// npx prisma studio => loadl Ui to browse DB
+
+//demo DATABASE_URL="postgresql://postgres:<password here>@localhost:5432/<Database Name here>?schema=public"
+
+//relations one2many and many2one same shit its  BookList        BookList? @relation(fields: [bookListId], references: [id])
+// many to many just add likedBy         User[]    @relation("likedBooks") on both table
+generator client {
+  provider = "prisma-client-js" //remove shitty 2nd line of this and import from @prisma/client
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}

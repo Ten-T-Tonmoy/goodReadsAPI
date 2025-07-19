@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body
+    class="bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 h-screen"
+  >
+    <!-- main body -->
+    <div class="text-white p-2">
+      <h1 class="mb-6 text-3xl font-bold text-center">Books list here :</h1>
+      <ul class="p-4 grid grid-cols-2 gap-2 justify-center items-center w-full">
+        <% books.forEach((el,idx)=> {%>
+        <div key="idx " class="bg-gray-800 p-3 rounded-md">
+          <p class="inline">Book Name :</p>
+          <p class="inline text-cyan-500"><%=el.title %></p>
+        </div>
+        <%} ) %>
+      </ul>
+    </div>
+  </body>
+</html>
