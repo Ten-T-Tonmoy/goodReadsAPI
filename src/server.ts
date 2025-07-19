@@ -23,10 +23,7 @@ app.get("/test", (req: Request, res: Response) => {
   res.send("its goin up broh");
 });
 
-import bookRoutes from "./routes/bookRoutes.js";
-
 //route handling
-app.use("/", bookRoutes);
 
 app.listen(PORT, () => {
   console.log(`Connected to port ${PORT}`);

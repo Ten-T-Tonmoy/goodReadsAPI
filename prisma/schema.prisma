@@ -27,6 +27,7 @@ model Book {
   id              String    @id @default(cuid())
   title           String
   description     String
+  bookType        String //poetry drama academic bla bla shit
   genre           String
   keywords        String[]
   coverPhoto      String?
@@ -41,6 +42,9 @@ model Book {
   review          Review[]
   BookList        BookList? @relation(fields: [bookListId], references: [id])
   bookListId      String?
+  personalRemark  String? // only for bookList making
+  Author          Author?   @relation(fields: [authorId], references: [id])
+  authorId        String?   @unique //one2one relation
 }
 
 model User {
@@ -56,7 +60,21 @@ model User {
   writtenReviews  Review[]
   writtenArticles Article[]
   createdBookList BookList[]
-  Commnet         Commnet[]
+  madeComments    Commnet[]
+  Author          Author[]
+}
+
+model Author {
+  id              String     @id @default(cuid())
+  info            String //gonna be markDownWiki
+  userProfile     User       @relation(fields: [userId], references: [id])
+  writtenBooks    Book[]
+  createdPost     Article[]
+  createdList     BookList[]
+  region          String
+  languageOfBooks String //considering main lanuguage now ex :persian poet
+  role            String //poet writer or dramaist bla bla
+  userId          String
 }
 
 model Review {
@@ -81,6 +99,8 @@ model Article {
   upVotes   Int
   downVotes Int
   comments  Commnet[]
+  Author    Author?   @relation(fields: [authorId], references: [id])
+  authorId  String?
 }
 
 model Commnet {
@@ -96,14 +116,26 @@ model Commnet {
 }
 
 model BookList {
-  id          String    @id @default(cuid())
-  title       String
-  description String?
-  coverPhoto  String?
-  createdBy   User      @relation(fields: [userId], references: [id]) // local foreign key=> primary key of that table
-  userId      String
-  booksListed Book[]
-  upVotes     Int
-  downVotes   Int
-  comments    Commnet[]
+  id           String    @id @default(cuid())
+  isPublicList Boolean //personal list choice
+  title        String
+  description  String?
+  coverPhoto   String?
+  createdBy    User      @relation(fields: [userId], references: [id]) // local foreign key=> primary key of that table
+  userId       String
+  booksListed  Book[]
+  upVotes      Int
+  downVotes    Int
+  comments     Commnet[]
+  Author       Author?   @relation(fields: [authorId], references: [id])
+  authorId     String?
 }
+
+//future modular cases
+
+// model Reaction { 
+//   id           String @id @default(cuid())
+//   reactionType String //cool helpful weird mad tears 
+//   reactionCount Int
+//   reactors      User[]
+// }
