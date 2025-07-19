@@ -1,4 +1,4 @@
-import prisma from "../prisma";
+import prisma from "../prisma.js";
 import { Request, Response } from "express";
 
 import { bookType } from "../types";
@@ -15,7 +15,9 @@ export const getBooksHomePage = async (req: Request, res: Response) => {
         //descending order of rating logic kinda weird bt temporary
         break;
       case "mostLiked":
-        orderBy = { ratingSum: "desc" };
+        orderBy = {
+          ratingSum: "desc",
+        };
         break;
       case "newArrival":
         orderBy = { createdAt: "desc" };
@@ -24,12 +26,34 @@ export const getBooksHomePage = async (req: Request, res: Response) => {
 
     //for search by genre
     const where: any = {};
-    if (genre) where.genre = genre as string;
-
+    const genreString = typeof genre === "string" ? genre : undefined;
+    if (genreString) where.genre = { has: genreString }; //being safe?
+    //it worked undefined caused error!
+    //book fetch
     const books = await prisma.book.findMany({
       where,
       include: {
         writer: true,
+        likedBy: true,
+        _count: {
+          select: {
+            likedBy: true, //return likedBy:25
+            review: true,
+          },
+        },
+        //just need to include scalar fields others auto goes
+      },
+      orderBy,
+      take: 40,
+    });
+
+    res.json({
+      success: true,
+      data: books,
+      meta: {
+        total: books.length,
+        genre: genre || "all",
+        sort: sort || "newArrival",
       },
     });
   } catch (error) {

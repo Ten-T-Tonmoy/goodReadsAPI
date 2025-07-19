@@ -24,6 +24,8 @@ app.get("/test", (req: Request, res: Response) => {
 });
 
 //route handling
+import bookRoutes from "./routes/books.routes.js";
+app.use("/api", bookRoutes);
 
 app.listen(PORT, () => {
   console.log(`Connected to port ${PORT}`);
