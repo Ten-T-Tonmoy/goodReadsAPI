@@ -18,6 +18,8 @@ app.use(express.static(path.join(__dirname, "../public"))); //static file serve 
 //app.use("/endpoint",middleware) will only run for this endpoint
 
 dotenv.config();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/test", (req: Request, res: Response) => {
   res.send("its goin up broh");

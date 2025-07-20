@@ -72,8 +72,8 @@
 // }
 
 // // api/routes/books.ts - Book related endpoints
-// import { PrismaClient } from "@prisma/client";
-// import { Request, Response } from "express";
+// import { PrismaClient } from '@prisma/client';
+// import { Request, Response } from 'express';
 
 // const prisma = new PrismaClient();
 
@@ -81,18 +81,18 @@
 // export const getHomePage = async (req: Request, res: Response) => {
 //   try {
 //     const { genre, sort } = req.query;
-
-//     let orderBy: any = { createdAt: "desc" }; // default to new arrivals
-
+    
+//     let orderBy: any = { createdAt: 'desc' }; // default to new arrivals
+    
 //     switch (sort) {
-//       case "trending":
-//         orderBy = { ratingSum: "desc" };
+//       case 'trending':
+//         orderBy = { ratingSum: 'desc' };
 //         break;
-//       case "most-liked":
-//         orderBy = { likedBy: { _count: "desc" } };
+//       case 'most-liked':
+//         orderBy = { likedBy: { _count: 'desc' } };
 //         break;
-//       case "new":
-//         orderBy = { createdAt: "desc" };
+//       case 'new':
+//         orderBy = { createdAt: 'desc' };
 //         break;
 //     }
 
@@ -102,11 +102,11 @@
 //         Author: true,
 //         likedBy: true,
 //         _count: {
-//           select: { likedBy: true, review: true },
-//         },
+//           select: { likedBy: true, review: true }
+//         }
 //       },
 //       orderBy,
-//       take: 50,
+//       take: 50
 //     });
 
 //     res.json({
@@ -114,12 +114,12 @@
 //       data: books,
 //       meta: {
 //         total: books.length,
-//         genre: genre || "all",
-//         sort: sort || "new",
-//       },
+//         genre: genre || 'all',
+//         sort: sort || 'new'
+//       }
 //     });
 //   } catch (error) {
-//     res.status(500).json({ success: false, error: "Failed to fetch books" });
+//     res.status(500).json({ success: false, error: 'Failed to fetch books' });
 //   }
 // };
 
@@ -127,24 +127,24 @@
 // export const getBookById = async (req: Request, res: Response) => {
 //   try {
 //     const { id } = req.params;
-
+    
 //     const book = await prisma.book.findUnique({
 //       where: { id },
 //       include: {
 //         Author: true,
 //         review: {
 //           include: { reviewer: true },
-//           orderBy: { createdAt: "desc" },
+//           orderBy: { createdAt: 'desc' }
 //         },
 //         likedBy: true,
 //         _count: {
-//           select: { likedBy: true, review: true },
-//         },
-//       },
+//           select: { likedBy: true, review: true }
+//         }
+//       }
 //     });
 
 //     if (!book) {
-//       return res.status(404).json({ success: false, error: "Book not found" });
+//       return res.status(404).json({ success: false, error: 'Book not found' });
 //     }
 
 //     // Get suggested books based on genre and keywords
@@ -155,17 +155,17 @@
 //           {
 //             OR: [
 //               { genre: book.genre },
-//               { keywords: { hasSome: book.keywords } },
-//             ],
-//           },
-//         ],
+//               { keywords: { hasSome: book.keywords } }
+//             ]
+//           }
+//         ]
 //       },
 //       include: {
 //         Author: true,
-//         _count: { select: { likedBy: true } },
+//         _count: { select: { likedBy: true } }
 //       },
 //       take: 6,
-//       orderBy: { ratingSum: "desc" },
+//       orderBy: { ratingSum: 'desc' }
 //     });
 
 //     res.json({
@@ -173,18 +173,13 @@
 //       data: {
 //         book,
 //         suggestedBooks,
-//         avgRating:
-//           book.ratingNumber > 0 ? book.ratingSum / book.ratingNumber : 0,
-//       },
+//         avgRating: book.ratingNumber > 0 ? book.ratingSum / book.ratingNumber : 0
+//       }
 //     });
 //   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ success: false, error: "Failed to fetch book details" });
+//     res.status(500).json({ success: false, error: 'Failed to fetch book details' });
 //   }
 // };
-
-
 
 // // POST /addbook - Add new book
 // export const addBook = async (req: Request, res: Response) => {
@@ -199,7 +194,7 @@
 //       publisher,
 //       publishDate,
 //       availableStores,
-//       authorId,
+//       authorId
 //     } = req.body;
 
 //     const newBook = await prisma.book.create({
@@ -213,20 +208,20 @@
 //         publisher,
 //         publishDate: publishDate ? new Date(publishDate) : undefined,
 //         availableStores,
-//         authorId,
+//         authorId
 //       },
 //       include: {
-//         Author: true,
-//       },
+//         Author: true
+//       }
 //     });
 
 //     res.status(201).json({
 //       success: true,
 //       data: newBook,
-//       message: "Book added successfully",
+//       message: 'Book added successfully'
 //     });
 //   } catch (error) {
-//     res.status(500).json({ success: false, error: "Failed to add book" });
+//     res.status(500).json({ success: false, error: 'Failed to add book' });
 //   }
 // };
 
@@ -239,26 +234,22 @@
 //     const books = await prisma.book.findMany({
 //       where: {
 //         OR: [
-//           { title: { contains: keyword, mode: "insensitive" } },
-//           {
-//             Author: {
-//               userProfile: { name: { contains: keyword, mode: "insensitive" } },
-//             },
-//           },
-//           { keywords: { has: keyword } },
-//         ],
+//           { title: { contains: keyword, mode: 'insensitive' } },
+//           { Author: { userProfile: { name: { contains: keyword, mode: 'insensitive' } } } },
+//           { keywords: { has: keyword } }
+//         ]
 //       },
 //       include: {
 //         Author: {
-//           include: { userProfile: true },
+//           include: { userProfile: true }
 //         },
 //         _count: {
-//           select: { likedBy: true, review: true },
-//         },
+//           select: { likedBy: true, review: true }
+//         }
 //       },
 //       take: Number(limit),
 //       skip: Number(offset),
-//       orderBy: { ratingSum: "desc" },
+//       orderBy: { ratingSum: 'desc' }
 //     });
 
 //     res.json({
@@ -268,11 +259,11 @@
 //         keyword,
 //         total: books.length,
 //         limit: Number(limit),
-//         offset: Number(offset),
-//       },
+//         offset: Number(offset)
+//       }
 //     });
 //   } catch (error) {
-//     res.status(500).json({ success: false, error: "Search failed" });
+//     res.status(500).json({ success: false, error: 'Search failed' });
 //   }
 // };
 
@@ -285,22 +276,20 @@
 //       where: { id },
 //       data: {
 //         ...updateData,
-//         publishDate: updateData.publishDate
-//           ? new Date(updateData.publishDate)
-//           : undefined,
+//         publishDate: updateData.publishDate ? new Date(updateData.publishDate) : undefined
 //       },
 //       include: {
-//         Author: true,
-//       },
+//         Author: true
+//       }
 //     });
 
 //     res.json({
 //       success: true,
 //       data: updatedBook,
-//       message: "Book updated successfully",
+//       message: 'Book updated successfully'
 //     });
 //   } catch (error) {
-//     res.status(500).json({ success: false, error: "Failed to update book" });
+//     res.status(500).json({ success: false, error: 'Failed to update book' });
 //   }
 // };
 
@@ -310,15 +299,15 @@
 //     const { id } = req.params;
 
 //     await prisma.book.delete({
-//       where: { id },
+//       where: { id }
 //     });
 
 //     res.json({
 //       success: true,
-//       message: "Book deleted successfully",
+//       message: 'Book deleted successfully'
 //     });
 //   } catch (error) {
-//     res.status(500).json({ success: false, error: "Failed to delete book" });
+//     res.status(500).json({ success: false, error: 'Failed to delete book' });
 //   }
 // };
 
@@ -335,25 +324,23 @@
 //         userProfile: true,
 //         writtenBooks: {
 //           include: {
-//             _count: { select: { likedBy: true, review: true } },
+//             _count: { select: { likedBy: true, review: true } }
 //           },
-//           orderBy: { createdAt: "desc" },
+//           orderBy: { createdAt: 'desc' }
 //         },
 //         createdPost: {
-//           orderBy: { createdAt: "desc" },
-//           take: 5,
+//           orderBy: { createdAt: 'desc' },
+//           take: 5
 //         },
 //         createdList: {
 //           where: { isPublicList: true },
-//           orderBy: { upVotes: "desc" },
-//         },
-//       },
+//           orderBy: { upVotes: 'desc' }
+//         }
+//       }
 //     });
 
 //     if (!author) {
-//       return res
-//         .status(404)
-//         .json({ success: false, error: "Author not found" });
+//       return res.status(404).json({ success: false, error: 'Author not found' });
 //     }
 
 //     res.json({
@@ -362,13 +349,11 @@
 //         author,
 //         booksCount: author.writtenBooks.length,
 //         articlesCount: author.createdPost.length,
-//         publicListsCount: author.createdList.length,
-//       },
+//         publicListsCount: author.createdList.length
+//       }
 //     });
 //   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ success: false, error: "Failed to fetch author details" });
+//     res.status(500).json({ success: false, error: 'Failed to fetch author details' });
 //   }
 // };
 
@@ -386,33 +371,31 @@
 //         Author: true,
 //         comments: {
 //           include: { commentedBy: true },
-//           orderBy: { createdAt: "desc" },
-//         },
-//       },
+//           orderBy: { createdAt: 'desc' }
+//         }
+//       }
 //     });
 
 //     if (!article) {
-//       return res
-//         .status(404)
-//         .json({ success: false, error: "Article not found" });
+//       return res.status(404).json({ success: false, error: 'Article not found' });
 //     }
 
 //     // Get random article suggestion
 //     const randomArticle = await prisma.article.findMany({
 //       where: { id: { not: id } },
 //       take: 1,
-//       orderBy: { upVotes: "desc" },
+//       orderBy: { upVotes: 'desc' }
 //     });
 
 //     res.json({
 //       success: true,
 //       data: {
 //         article,
-//         nextSuggestion: randomArticle[0] || null,
-//       },
+//         nextSuggestion: randomArticle[0] || null
+//       }
 //     });
 //   } catch (error) {
-//     res.status(500).json({ success: false, error: "Failed to fetch article" });
+//     res.status(500).json({ success: false, error: 'Failed to fetch article' });
 //   }
 // };
 
@@ -422,7 +405,7 @@
 // export const getBookListById = async (req: Request, res: Response) => {
 //   try {
 //     const { id } = req.params;
-//     const { view = "blocks" } = req.query; // blocks or list view
+//     const { view = 'blocks' } = req.query; // blocks or list view
 
 //     const bookList = await prisma.bookList.findUnique({
 //       where: { id },
@@ -432,22 +415,20 @@
 //         booksListed: {
 //           include: {
 //             Author: {
-//               include: { userProfile: true },
+//               include: { userProfile: true }
 //             },
-//             _count: { select: { likedBy: true } },
-//           },
+//             _count: { select: { likedBy: true } }
+//           }
 //         },
 //         comments: {
 //           include: { commentedBy: true },
-//           orderBy: { createdAt: "desc" },
-//         },
-//       },
+//           orderBy: { createdAt: 'desc' }
+//         }
+//       }
 //     });
 
 //     if (!bookList) {
-//       return res
-//         .status(404)
-//         .json({ success: false, error: "Book list not found" });
+//       return res.status(404).json({ success: false, error: 'Book list not found' });
 //     }
 
 //     // Check if list is private and user has access
@@ -460,13 +441,11 @@
 //       data: {
 //         bookList,
 //         view,
-//         totalBooks: bookList.booksListed.length,
-//       },
+//         totalBooks: bookList.booksListed.length
+//       }
 //     });
 //   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ success: false, error: "Failed to fetch book list" });
+//     res.status(500).json({ success: false, error: 'Failed to fetch book list' });
 //   }
 // };
 
@@ -483,27 +462,27 @@
 //         likedBooks: {
 //           include: {
 //             Author: { include: { userProfile: true } },
-//             _count: { select: { likedBy: true } },
+//             _count: { select: { likedBy: true } }
 //           },
 //           take: 10,
-//           orderBy: { createdAt: "desc" },
+//           orderBy: { createdAt: 'desc' }
 //         },
 //         writtenReviews: {
 //           include: { book: true },
-//           orderBy: { createdAt: "desc" },
-//           take: 10,
+//           orderBy: { createdAt: 'desc' },
+//           take: 10
 //         },
 //         createdBookList: {
 //           where: { isPublicList: true },
-//           orderBy: { upVotes: "desc" },
-//           take: 5,
+//           orderBy: { upVotes: 'desc' },
+//           take: 5
 //         },
-//         Author: true,
-//       },
+//         Author: true
+//       }
 //     });
 
 //     if (!user) {
-//       return res.status(404).json({ success: false, error: "User not found" });
+//       return res.status(404).json({ success: false, error: 'User not found' });
 //     }
 
 //     res.json({
@@ -514,44 +493,36 @@
 //           likedBooksCount: user.likedBooks.length,
 //           reviewsCount: user.writtenReviews.length,
 //           publicListsCount: user.createdBookList.length,
-//           isAuthor: !!user.Author?.length,
-//         },
-//       },
+//           isAuthor: !!user.Author?.length
+//         }
+//       }
 //     });
 //   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ success: false, error: "Failed to fetch user profile" });
+//     res.status(500).json({ success: false, error: 'Failed to fetch user profile' });
 //   }
 // };
 
 // // api/middleware/auth.ts - Authentication middleware
-// export const authenticateUser = async (
-//   req: Request,
-//   res: Response,
-//   next: any
-// ) => {
+// export const authenticateUser = async (req: Request, res: Response, next: any) => {
 //   try {
 //     // Implement JWT token verification here
-//     const token = req.headers.authorization?.replace("Bearer ", "");
-
+//     const token = req.headers.authorization?.replace('Bearer ', '');
+    
 //     if (!token) {
-//       return res
-//         .status(401)
-//         .json({ success: false, error: "No token provided" });
+//       return res.status(401).json({ success: false, error: 'No token provided' });
 //     }
 
 //     // Verify token and attach user to request
 //     // req.user = decodedUser;
 //     next();
 //   } catch (error) {
-//     res.status(401).json({ success: false, error: "Invalid token" });
+//     res.status(401).json({ success: false, error: 'Invalid token' });
 //   }
 // };
 
 // // api/app.ts - Express app setup
-// import express from "express";
-// import cors from "cors";
+// import express from 'express';
+// import cors from 'cors';
 
 // const app = express();
 
@@ -559,23 +530,23 @@
 // app.use(express.json());
 
 // // Book routes
-// app.get("/home", getHomePage);
-// app.get("/viewbook/:id", getBookById);
-// app.post("/addbook", authenticateUser, addBook);
-// app.get("/searchBooks/:keyword", searchBooks);
-// app.put("/updatebook", authenticateUser, updateBook);
-// app.delete("/deletebook/:id", authenticateUser, deleteBook);
+// app.get('/home', getHomePage);
+// app.get('/viewbook/:id', getBookById);
+// app.post('/addbook', authenticateUser, addBook);
+// app.get('/searchBooks/:keyword', searchBooks);
+// app.put('/updatebook', authenticateUser, updateBook);
+// app.delete('/deletebook/:id', authenticateUser, deleteBook);
 
 // // Author routes
-// app.get("/authors/:id", getAuthorById);
+// app.get('/authors/:id', getAuthorById);
 
-// // Article routes
-// app.get("/article/:id", getArticleById);
+// // Article routes  
+// app.get('/article/:id', getArticleById);
 
 // // BookList routes
-// app.get("/bookList/:id", getBookListById);
+// app.get('/bookList/:id', getBookListById);
 
 // // User routes
-// app.get("/userProfile/:id", getUserProfile);
+// app.get('/userProfile/:id', getUserProfile);
 
 // export default app;

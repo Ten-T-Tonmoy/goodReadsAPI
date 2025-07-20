@@ -156,6 +156,7 @@ model BookList {
   comments     Comment[]
   Author       Author?   @relation(fields: [authorId], references: [id])
   authorId     String?
+  createdAt    DateTime
 }
 
 //future modular cases

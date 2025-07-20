@@ -68,3 +68,12 @@
 
 - contents
   - infos and book likes and reviews or made public list(past history like reddit if possible)
+
+
+### basically 
+- operations by each elements/table
+    - books curd +review 
+    - booklist/articles curd +comment+upVote/downVote
+    - author curd 
+    - user curd + books list +remarks on books + 
+

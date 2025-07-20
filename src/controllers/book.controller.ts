@@ -4,8 +4,11 @@ import { Request, Response } from "express";
 import { bookType } from "../types";
 import { BookType } from "@prisma/client";
 import { addBookSchema } from "../zodSchemas/bookSchema.js";
+import { success } from "zod";
 
 //zod shits
+
+type ApiResponse = Response<any, Record<string, any>>;
 
 export const getBooksHomePage = async (req: Request, res: Response) => {
   try {
@@ -106,7 +109,7 @@ export const getBookById = async (req: Request, res: Response) => {
     });
 
     if (!book) {
-      return res.json(404).json({
+      return res.status(404).json({
         success: false,
         error: "Book not found! Invalid credentials",
       });
@@ -168,7 +171,7 @@ export const getBookById = async (req: Request, res: Response) => {
       },
     });
 
-    res.json({
+    res.status(201).json({
       success: true,
       data: {
         book,
@@ -231,11 +234,35 @@ export const addBook = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json(newBook);
+    res.status(201).json({
+      success: true,
+      newBook,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: "Addbooks controller error",
+      error: "Addbook controller error",
+    });
+  }
+};
+
+//-----------------------------Delete Book Time------------------------
+// api/deletebook/:id
+const deleteBook = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    await prisma.book.delete({
+      where: { id },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Book deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "deleteBook controller error",
     });
   }
 };
