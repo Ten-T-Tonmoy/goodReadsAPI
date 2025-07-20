@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import { Request, Response, Express } from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import corsOption from "./config/cors.config.js";
+import cors from "cors";
 //used concurrently and rimraf on script
 
 const app: Express = express();
@@ -20,6 +22,7 @@ app.use(express.static(path.join(__dirname, "../public"))); //static file serve 
 dotenv.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOption));
 
 app.get("/test", (req: Request, res: Response) => {
   res.send("its goin up broh");
