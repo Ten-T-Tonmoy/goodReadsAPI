@@ -7,7 +7,7 @@ import corsOption from "./config/cors.config.js";
 import cors from "cors";
 //used concurrently and rimraf on script
 
-const app: Express = express();
+export const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || "3000");
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,8 +29,44 @@ app.get("/test", (req: Request, res: Response) => {
 });
 
 //route handling
-import bookRoutes from "./routes/books.routes.js";
-app.use("/api", bookRoutes);
+import bookRouter from "./routes/books.routes.js";
+app.use("/api/books", bookRouter);
+
+//uploader shits
+
+import { cloudinaryUploader } from "./config/cloudinary.config.js";
+import { upload } from "./config/multer.config.js";
+
+interface MulterRequest extends Request {
+  file: Express.Multer.File;
+}
+app.post(
+  "/upload",
+  upload.single("file"),
+  async (req: Request, res: Response) => {
+    try {
+      const filePath = req.file?.path;
+      const gottenResponse = await cloudinaryUploader(filePath);
+      if (!gottenResponse) {
+        res.status(500).json({
+          success: false,
+          message: "",
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({
+        success: false,
+        message: "upload failed man",
+      });
+    }
+  }
+);
+
+app.get("/upload-test", (req: Request, res: Response) => {
+  res.render("uploader");
+  // res.json({ message: "its goin down" });
+});
 
 app.listen(PORT, () => {
   console.log(`Connected to port ${PORT}`);

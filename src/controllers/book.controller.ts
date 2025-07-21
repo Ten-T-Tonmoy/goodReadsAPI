@@ -109,10 +109,11 @@ export const getBookById = async (req: Request, res: Response) => {
     });
 
     if (!book) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: "Book not found! Invalid credentials",
       });
+      return;
     }
 
     //suggested by writer
@@ -197,10 +198,11 @@ export const addBook = async (req: Request, res: Response) => {
     const parsed = addBookSchema.safeParse(req.body);
 
     if (!parsed.success) {
-      return res.status(400).json({
+      res.status(400).json({
         error: "Zod validation Failed",
-        issues: parsed.error?.format,
+        issues: parsed.error.format(),
       });
+      return;
     }
     const {
       title,

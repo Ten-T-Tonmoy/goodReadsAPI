@@ -19,7 +19,7 @@ cloudinary.config({
 });
 
 export const cloudinaryUploader = async (
-  localPath: string
+  localPath: any
 ): Promise<UploadApiResponse | null> => {
   try {
     if (!localPath) return null;

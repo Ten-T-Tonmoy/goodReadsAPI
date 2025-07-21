@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload Testing</title>
+  </head>
+  <body
+    class="bg-gradient-to-r w-screen h-screen text-white from-blue-500 via-indigo-500 to-cyan-500"
+  >
+    <h1 class="p-4 text-3xl font-bold">
+      Check Cloudinary+multer upload bridge
+    </h1>
+
+    <form
+      class="bg-slate-950/30 w-[80%] flex flex-col gap-2 mx-auto my-auto p-4 rounded-md"
+      action="/upload"
+      enctype="multipart/form-data"
+      method="POST"
+    >
+      <label for="file" class="block">Images only </label>
+      <input class="w-fit" type="file" name="file" id="file" required />
+      <button
+        type="submit"
+        class=" bg-gradient-to-r p-2 rounded-md text-white from-blue-500 to-indigo-500 
+        font-semibold hover:border-[2px] border-white hover:scale-105 active:scale-95 transition-all
+        duration-300 ease-in-out "
+      >
+        Upload
+      </button>
+    </form>
+  </body>
+</html>
