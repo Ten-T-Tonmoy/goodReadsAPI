@@ -46,8 +46,8 @@ export const cloudinaryUploader = async (
 export const cloudinaryController = async (req: Request, res: Response) => {
   try {
     const filePath = req.file?.path;
-    const returnedResponse: Promise<UploadApiResponse | null> =
-      cloudinaryUploader(filePath);
+    const returnedResponse = await cloudinaryUploader(filePath);
+    //ps not storing promise bt resolved value
 
     if (returnedResponse === null) {
       res.status(500).json({
@@ -55,8 +55,7 @@ export const cloudinaryController = async (req: Request, res: Response) => {
         message: "cloudinary file upload failed huh? ",
       });
     }
-
-    console.log(`File uploaded. Available at : ${returnedResponse.url}`);
+    console.log(`File uploaded. Available at : ${returnedResponse?.url}`);
   } catch (e) {
     console.error(e);
     res.status(500).json({

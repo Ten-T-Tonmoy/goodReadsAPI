@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../prisma.js";
 import { addAuthorSchema } from "../zodSchemas/authorSchema.js";
+import { cloudinaryUploader } from "../config/cloudinary.config.js";
+import fs from "fs";
 
 //-------------------------------get /author/:id details-----------------------
 
@@ -66,6 +68,19 @@ export const addAuthor = async (req: MulterRequest, res: Response) => {
     // };
 
     // const profilePhotoPath = files?.profil
+    const profilePhotoPath = files.profilePhoto?.[0];
+    const coverPhotoPath = files.coverPhoto?.[0];
+
+    const responseProfilePic = await cloudinaryUploader(profilePhotoPath);
+    //async func so it will return promise u must resolve such shits to make it normal
+    const responseCoverPic = await cloudinaryUploader(coverPhotoPath);
+    if (!responseCoverPic) {
+      console.log("CoverPic not found");
+    }
+    if (!responseProfilePic) {
+      console.log("ProfilePic not found");
+    }
+
     const {
       name,
       titles,
@@ -74,8 +89,8 @@ export const addAuthor = async (req: MulterRequest, res: Response) => {
       region, //
       languageOfBooks,
       activeUsing,
-      profilePhoto,
-      coverPhoto,
+      // profilePhoto,
+      // coverPhoto,
     } = parsed.data;
 
     const newAuthor = await prisma.author.create({
@@ -87,11 +102,17 @@ export const addAuthor = async (req: MulterRequest, res: Response) => {
         role,
         languageOfBooks,
         activeUsing,
-        profilePhoto,
-        coverPhoto,
+        profilePhoto: responseProfilePic?.url || null,
+        coverPhoto: responseCoverPic?.url || null,
       },
+      //include will populate fields
       include: {},
     });
+
+    //delete local photo after delete
+
+    if (profilePhotoPath?.path) fs.unlinkSync(profilePhotoPath.path);
+    if (coverPhotoPath?.path) fs.unlinkSync(coverPhotoPath.path);
 
     res.status(201).json({
       success: true,
