@@ -85,23 +85,30 @@ model User {
   about           String?
   likedBooks      Book[]     @relation("likedBooks")
   writtenReviews  Review[]
+  madeComments    Comment[]
   writtenArticles Article[]
   createdBookList BookList[]
-  madeComments    Comment[]
-  Author          Author?
+  // Author          Author?
 }
 
 model Author {
   id              String     @id @default(cuid())
+  name            String
+  titles          String[]
   info            String //gonna be markDownWiki
-  userProfile     User       @relation(fields: [userId], references: [id])
+  profilePhoto    String?
+  coverPhoto      String?
+  activeUsing     Boolean //dead will be 0
+  // userProfile     User       @relation(fields: [userId], references: [id])
   writtenBooks    Book[]     @relation("authorBooks")
   createdPost     Article[]
   createdList     BookList[]
+  writtenReviews  Review[]
+  madeComments    Comment[]
   region          String
   languageOfBooks String //considering main lanuguage now ex :persian poet
   role            AuthorType //poet writer or dramaist bla bla
-  userId          String     @unique // to one-one make unique and that optional for role based
+  // userId          String     @unique  to one-one make unique and that optional for role based
 }
 
 model Review {
@@ -113,6 +120,8 @@ model Review {
   createdAt DateTime @default(now())
   reviewer  User?    @relation(fields: [userId], references: [id])
   userId    String?
+  Author    Author?  @relation(fields: [authorId], references: [id])
+  authorId  String?
 }
 
 model Article {
@@ -140,6 +149,8 @@ model Comment {
   commentedBy      User     @relation(fields: [userId], references: [id])
   userId           String
   createdAt        DateTime @default(now())
+  Author           Author?  @relation(fields: [authorId], references: [id])
+  authorId         String?
 }
 
 model BookList {

@@ -199,7 +199,7 @@ export const addBook = async (req: Request, res: Response) => {
 
     if (!parsed.success) {
       res.status(400).json({
-        error: "Zod validation Failed",
+        error: "AddBook Zod validation Failed",
         issues: parsed.error.format(),
       });
       return;

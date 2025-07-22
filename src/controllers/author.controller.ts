@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../prisma.js";
+import { addAuthorSchema } from "../zodSchemas/authorSchema.js";
 
 //-------------------------------get /author/:id details-----------------------
 
@@ -43,9 +44,56 @@ export const getAuthorById = async (req: Request, res: Response) => {
   }
 };
 
+//-----------------------addAuthor-----------------------------
 
-//-----------------------addAuthor------------------------
+export const addAuthor = async (req: Request, res: Response) => {
+  try {
+    const parsed = addAuthorSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({
+        error: "AddAuthor Zod validation Failed",
+        issues: parsed.error.format(),
+      });
+      return;
+    }
+    const {
+      name,
+      titles,
+      info,
+      role,
+      region, //
+      languageOfBooks,
+      activeUsing,
+      profilePhoto,
+      coverPhoto,
+    } = parsed.data;
 
+    const newAuthor = await prisma.author.create({
+      data: {
+        name,
+        titles,
+        info,
+        region, //
+        role,
+        languageOfBooks,
+        activeUsing,
+        profilePhoto,
+        coverPhoto,
+      },
+      include: {},
+    });
+
+    res.status(201).json({
+      success: true,
+      newAuthor,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "addAuthor controller error",
+    });
+  }
+};
 
 // try {
 //   } catch (error) {
