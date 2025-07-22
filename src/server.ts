@@ -34,40 +34,6 @@ app.use("/api/books", bookRouter);
 
 //uploader shits
 
-import { cloudinaryUploader } from "./config/cloudinary.config.js";
-import { upload } from "./config/multer.config.js";
-
-interface MulterRequest extends Request {
-  file: Express.Multer.File;
-}
-app.post(
-  "/upload",
-  upload.single("file"),
-  async (req: Request, res: Response) => {
-    try {
-      const filePath = req.file?.path;
-      const gottenResponse = await cloudinaryUploader(filePath);
-      if (!gottenResponse) {
-        res.status(500).json({
-          success: false,
-          message: "",
-        });
-      }
-    } catch (e) {
-      console.error(e);
-      res.status(500).json({
-        success: false,
-        message: "upload failed man",
-      });
-    }
-  }
-);
-
-app.get("/upload-test", (req: Request, res: Response) => {
-  res.render("uploader");
-  // res.json({ message: "its goin down" });
-});
-
 app.listen(PORT, () => {
   console.log(`Connected to port ${PORT}`);
 });

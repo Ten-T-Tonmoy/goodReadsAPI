@@ -10,6 +10,7 @@
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 // import { CloudinaryStorage } from "multer-storage-cloudinary";
 import fs from "fs";
+import { Request, Response } from "express";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -28,15 +29,40 @@ export const cloudinaryUploader = async (
       resource_type: "auto",
     });
 
-    console.log(`File uploaded. Available at : ${response.url}`);
+    // console.log(`File uploaded. Available at : ${response.url}`);
 
-    return response;
+    return response; // main stuff
   } catch (e: any) {
     fs.unlinkSync(localPath);
     if (e !== null) {
       console.log(`Cloudinary uploader error !`, e.message);
     }
     return null;
+  }
+};
+
+//-------------------------Controller here--------------------------------
+
+export const cloudinaryController = async (req: Request, res: Response) => {
+  try {
+    const filePath = req.file?.path;
+    const returnedResponse: Promise<UploadApiResponse | null> =
+      cloudinaryUploader(filePath);
+
+    if (returnedResponse === null) {
+      res.status(500).json({
+        success: false,
+        message: "cloudinary file upload failed huh? ",
+      });
+    }
+
+    console.log(`File uploaded. Available at : ${returnedResponse.url}`);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      success: false,
+      message: "upload failed man",
+    });
   }
 };
 

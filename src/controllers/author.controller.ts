@@ -11,7 +11,6 @@ export const getAuthorById = async (req: Request, res: Response) => {
     const author = await prisma.author.findUnique({
       where: { id },
       include: {
-        userProfile: true,
         writtenBooks: {
           include: {
             _count: { select: { likedBy: true, review: true } }, //total likes and reviews count
@@ -45,8 +44,13 @@ export const getAuthorById = async (req: Request, res: Response) => {
 };
 
 //-----------------------addAuthor-----------------------------
-
-export const addAuthor = async (req: Request, res: Response) => {
+interface MulterRequest extends Request {
+  files: {
+    profilePhoto?: Express.Multer.File[]; // multer bydef shows as arrrays
+    coverPhoto?: Express.Multer.File[];
+  };
+}
+export const addAuthor = async (req: MulterRequest, res: Response) => {
   try {
     const parsed = addAuthorSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -56,6 +60,12 @@ export const addAuthor = async (req: Request, res: Response) => {
       });
       return;
     }
+    const files = req.files; //multerRequest bruh
+    // as {
+    //   [fieldName: string]: Express.Multer.File[];
+    // };
+
+    // const profilePhotoPath = files?.profil
     const {
       name,
       titles,
