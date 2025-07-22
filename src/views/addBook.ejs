@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <link href="/css/styles.css" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-100 text-gray-900 p-6">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-6"><%= title %></h1>
+
+      <form
+        action="/api/books/add"
+        method="POST"
+        class="bg-white p-4 rounded shadow space-y-4"
+      >
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          class="input w-full"
+          required
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          class="input w-full"
+          required
+        ></textarea>
+        <input
+          type="text"
+          name="bookType"
+          placeholder="Book Type"
+          class="input w-full"
+          required
+        />
+        <input
+          type="text"
+          name="genre"
+          placeholder="Genres (comma separated)"
+          class="input w-full"
+        />
+        <input
+          type="text"
+          name="keywords"
+          placeholder="Keywords (comma separated)"
+          class="input w-full"
+        />
+        <input
+          type="text"
+          name="coverPhoto"
+          placeholder="Cover Photo URL"
+          class="input w-full"
+        />
+        <input
+          type="text"
+          name="publisher"
+          placeholder="Publisher"
+          class="input w-full"
+        />
+        <input type="date" name="publishDate" class="input w-full" />
+        <input
+          type="text"
+          name="availableStores"
+          placeholder="Stores (comma separated)"
+          class="input w-full"
+        />
+        <input
+          type="text"
+          name="writerIds"
+          placeholder="Writer IDs (comma separated)"
+          class="input w-full"
+        />
+
+        <button class="bg-blue-500 text-white px-4 py-2 rounded">
+          Add Book
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -276,3 +276,8 @@ const deleteBook = async (req: Request, res: Response) => {
 //       error: "getBooks controller error",
 //     });
 //   }
+
+// minimal ejs frontends
+export const viewAddBook = (req: Request, res: Response) => {
+  res.render("addBook");
+};
