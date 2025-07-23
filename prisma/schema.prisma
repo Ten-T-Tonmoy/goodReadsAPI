@@ -130,6 +130,7 @@ model Article {
   content   String
   createdAt DateTime
   updatedAt DateTime
+  theme     String
   author    User      @relation(fields: [userId], references: [id])
   userId    String
   upVotes   Int
