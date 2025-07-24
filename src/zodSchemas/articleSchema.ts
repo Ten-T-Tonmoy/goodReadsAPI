@@ -1,15 +1,18 @@
 import z from "zod";
 
-export const addAuthorSchema = z.object({
+export const addArticleSchema = z.object({
   title: z.string().min(1, "dude title gotta exist"),
   //   profilePhoto: z.string(),
   //   coverPhoto: z.string(),
 
-  titles: z.array(z.string()).nonempty("atleast something"),
+  //   createdAt   based on add we will store em
+  //   updatedAt
   content: z.string().min(1, "Minimal content required.. think it!"),
   theme: z.enum([
     "summer",
     "rain",
+    "ice",
+    "fire",
     "paradise",
     "forest",
     "fantasy",
@@ -19,6 +22,5 @@ export const addAuthorSchema = z.object({
     "colorful1",
     "colorful2",
   ]),
-  
-
+  //author add by maker
 });

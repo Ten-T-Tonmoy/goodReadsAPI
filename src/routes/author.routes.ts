@@ -7,13 +7,7 @@ import { upload } from "../config/multer.config";
 const router = Router();
 
 //for multiple files upload.fiels
-router.get("/add",
-    upload.fields([
-        {name:"profilePhoto",maxCount:1}
-        {name:"coverPhoto",maxCount:1}
-    ]),
-    
-);
+
 
 
 //http://localhost:3000/api/authors/:id check
