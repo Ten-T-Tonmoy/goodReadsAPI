@@ -52,7 +52,7 @@ interface MulterRequest extends Request {
     coverPhoto?: Express.Multer.File[];
   };
 }
-export const addAuthor = async (req: MulterRequest, res: Response) => {
+export const addAuthor = async (req: Request, res: Response) => {
   try {
     const parsed = addAuthorSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -62,7 +62,12 @@ export const addAuthor = async (req: MulterRequest, res: Response) => {
       });
       return;
     }
-    const files = req.files; //multerRequest bruh
+    //multerRequest bruh
+
+    const files = req.files as {
+      profilePhoto?: Express.Multer.File[];
+      coverPhoto?: Express.Multer.File[];
+    };
     // as {
     //   [fieldName: string]: Express.Multer.File[];
     // };
