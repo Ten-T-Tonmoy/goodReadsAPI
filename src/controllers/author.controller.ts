@@ -19,7 +19,7 @@ export const getAuthorById = async (req: Request, res: Response) => {
           },
           orderBy: { createdAt: "desc" },
         },
-        createdPost: {
+        writtenArticles: {
           orderBy: { createdAt: "desc" },
           take: 6,
         },
@@ -28,14 +28,19 @@ export const getAuthorById = async (req: Request, res: Response) => {
           orderBy: { upVotes: "desc" },
           take: 6,
         },
+        writtenReviews: {
+          orderBy: { createdAt: "desc" },
+          take: 6,
+        },
       },
     });
 
     if (!author) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: "Author not found! invalid credentials",
       });
+      return;
     }
   } catch (error) {
     res.status(500).json({

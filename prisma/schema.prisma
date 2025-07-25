@@ -116,7 +116,7 @@ model Author {
   activeUsing     Boolean //dead will be 0
   // userProfile     User       @relation(fields: [userId], references: [id])
   writtenBooks    Book[]     @relation("authorBooks")
-  createdPost     Article[]
+  writtenArticles Article[]
   createdList     BookList[]
   writtenReviews  Review[]
   madeComments    Comment[]
